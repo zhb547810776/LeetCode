@@ -1,0 +1,69 @@
+本身答案需要的输出就比较多
+因此需要枚举出每个答案，然后除去不需要的答案
+由题意可知不能包括重复的值，因此可知剪枝的方法便是判断重复值
+同时由于类似[1,2] [1,2,2]这样的答案也属于可行的答案
+故递归时先加入递归时第一次遇到的值，然后再判断后面的值是非与之前加入的值相同
+故判断方法需要加入i>index这一条件
+
+c#代码如下：
+public class Solution {
+    public IList<IList<int>> SubsetsWithDup(int[] nums) {
+        IList<IList<int>> res = new List<IList<int>>();
+        //处理数组数量为0
+        if(nums.Length == 0){
+            return res;
+        }
+        //排序后才好判断是否相同的值   进行剪枝
+        Array.Sort(nums);
+        Stack<int> path = new Stack<int>();
+        dfs(0,nums,path,res);
+
+        return res;
+    }
+
+    public void dfs(int index,int []nums,Stack<int> path,IList<IList<int>> res){
+		//注意此处不要直接将path加入res，若直接加入，相当于每次加入的都是同一个引用地址，最后输出的时候肯定是全空的
+        res.Add(new List<int>(path));
+
+        for(int i=index;i<nums.Length;i++){
+            if( i > index && nums[i] == nums[i-1]){
+			//判断相同的值时，进行剪枝
+                continue;
+            }
+            path.Push(nums[i]);
+            dfs(i+1,nums,path,res);
+            path.Pop();
+
+        }
+
+    }
+}
+
+以下是不使用栈的方法：
+public class Solution {
+    public IList<IList<int>> SubsetsWithDup(int[] nums) {
+        IList<IList<int>> res = new List<IList<int>>();
+        if(nums.Length == 0){
+            return res;
+        }
+        Array.Sort(nums);
+        dfs(0,nums,new List<int>(),res);
+
+        return res;
+    }
+
+    public void dfs(int index,int []nums,List<int> path,IList<IList<int>> res){
+        res.Add(new List<int>(path));
+
+        for(int i=index;i<nums.Length;i++){
+            if( i > index && nums[i] == nums[i-1]){
+                continue;
+            }
+            path.Add(nums[i]);
+            dfs(i+1,nums,path,res);
+            path.RemoveAt(path.Count-1);
+
+        }
+
+    }
+}
