@@ -1,0 +1,59 @@
+由于每个值非0即1
+同时每次只能够移动一个球
+即可知将i移动到index所需要的次数为  
+Math.Abs(i-index) * (boxes[i])
+因为每个值初始非0即1
+所以若boxes[i] 为0 即此盒子没有球 移动次数为0
+若boxes[0] 为1 则移动次数为 Math.Abs(i-index)
+一次for循环   计算出每个盒子移动到目标盒子的次数相加即可
+
+C#代码如下：
+public class Solution {
+    public int[] MinOperations(string boxes) {
+        int []result = new int[boxes.Length];
+        for(int i = 0;i<boxes.Length;i++){
+           result[i] = MinOperation(i,boxes.ToCharArray());
+        }
+        return result;
+    }
+
+    public int MinOperation(int index,char[] boxes){
+        int sum = 0;
+        for(int i = 0;i < boxes.Length;i++){
+            sum += (boxes[i] - '0') * Math.Abs(i - index);
+        }
+        return sum;
+    }
+}
+
+
+看题解   发现可以动态规划
+首先 使用dp[i] 记录 第i个盒子的最小移动次数
+求 dp[0] 的值 以及 它右边1的数量记录为right
+每次计算下一次的dp值时  先计算left 和 right的值
+则可知dp[i] = dp[i-1] - right + left;
+
+C#代码如下：
+public class Solution {
+    public int[] MinOperations(string boxes) {
+        int []dp = new int[boxes.Length];
+        int right = 0;
+        for(int i=0;i<boxes.Length;i++){
+            if(boxes.ToCharArray()[i] == '1'){
+                dp[0] += i;
+                right++;
+            }
+        }
+        int left = 0;
+        for(int i=1;i<boxes.Length;i++){
+            
+            if(boxes.ToCharArray()[i-1] == '1'){
+                left++;
+                right--;
+            }
+            dp[i] = dp[i-1] - right + left;
+        }
+
+        return dp;
+    }
+}
