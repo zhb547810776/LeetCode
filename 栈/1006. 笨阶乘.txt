@@ -1,0 +1,113 @@
+我第一时间想到的方法是将该阶乘以字符串拼接出来
+然后通过计算符号去先乘除后加减   但是无法通过   超出时间限制
+C#代码如下：    （但是超出时间限制   无法通过）
+public class Solution {
+    public int Clumsy(int N) {
+        string []opt = new string[]{"*","/","+","-"};
+        string str = FactorialSplicing(opt,0,N);
+
+        string []nums = str.Split('*','/','+','-');
+        opt = str.Split(new char[]{'0','1','2','3','4','5','6','7','8','9'},StringSplitOptions.RemoveEmptyEntries);
+        Cal(nums,opt,"*","/");
+
+        //true表示+ false表示-
+        bool flag = true;
+        for(int i=0;i<opt.Length;i++){
+            if(opt[i] == null){
+                nums[0] = nums[i];
+                break;
+            }
+            if(flag){
+                nums[i+1] = int.Parse(nums[i]) + int.Parse(nums[i+1])+"";
+                flag = !flag;
+            }else{
+                nums[i+1] = int.Parse(nums[i]) - int.Parse(nums[i+1])+"";
+                flag = !flag;
+            }
+        }
+
+        return int.Parse(nums[0]);
+    }
+
+    public String FactorialSplicing(string []opt,int index,int num){
+        if(num == 1){
+            return "1";
+        }
+        if(index > 3){
+            index = 0;
+        }
+        return String.Format("{0}{1}{2}",num,opt[index],FactorialSplicing(opt,index+1,num-1));
+    }
+
+    public void Cal(string []nums,string []opt,string opt1,string opt2){
+        for(int i=0;i<opt.Length;i++){
+            if(opt[i] == null){
+                break;
+            }
+            if(opt[i] == opt1 || opt[i] == opt2){
+                nums[i] = SwitchOpt(nums[i],nums[i+1],opt[i]);
+                DelArr(nums,i+1);
+                DelArr(opt,i);
+                i--;
+            }
+        }
+    }
+
+    public String SwitchOpt(string num1,string num2,string opt){
+        int n1 = int.Parse(num1);
+        int n2 = int.Parse(num2);
+        switch(opt){
+            case "*":return n1 * n2 +"";
+            case "/":return n1 / n2 +"";
+            case "+":return n1 + n2 +"";
+            case "-":return n1 - n2 +"";
+            default: return "0";
+        }
+    }
+
+    public void DelArr(string []arr,int index){
+        arr[index] = null;
+        for(int i=index; i<arr.Length-1;i++){
+            String temp = arr[i];
+            arr[i] = arr[i+1];
+            arr[i+1] = temp; 
+        }
+    }
+}
+
+看完题解，使用栈来进行操作，因为是固定的加减乘除顺序
+所以可以使用一个index循环判断此时是哪个操作符
+可以将暂时还不能确定的数据存入栈，确定了优先级后，便将数据从栈中取出
+C#代码如下：
+public class Solution {
+    public int Clumsy(int N) {
+        Stack<int> stack = new Stack<int>();
+        stack.Push(N);
+        N--;
+
+        //入栈过程计算乘除  且值直接赋在栈中
+        int index = 0;
+        while(N>0){
+            if(index % 4 == 0){
+                stack.Push(stack.Pop() * N);
+            }else if(index % 4 == 1){
+                stack.Push(stack.Pop() / N);
+            }else if(index % 4 == 2){
+                stack.Push(N);
+            }else{
+                stack.Push(-N);
+            }
+
+            index++;
+            N--;
+        }
+
+        //出栈过程计算总值
+        int sum = 0;
+        while(stack.Count > 0){
+            sum += stack.Pop();
+        }
+
+        return sum;
+    }
+}
