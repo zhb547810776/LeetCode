@@ -1,0 +1,46 @@
+看到题的时候只想到先暴力算出   然后进行剪枝
+然后写出代码之后  发现无法剪枝
+C#代码如下：
+public class Solution {
+    public int LongestCommonSubsequence(string text1, string text2) {
+        return CompareChar(text1,text2,0,0,0);
+    }
+
+    public int CompareChar(string text1,string text2,int up,int dowm,int len){
+        if(up == text1.Length || dowm == text2.Length){
+            return len;
+        }
+        if(text1[up] == text2[dowm]){
+            return CompareChar(text1,text2,up+1,dowm+1,len+1);
+        }else{
+            return Math.Max(CompareChar(text1,text2,up,dowm+1,len),CompareChar(text1,text2,up+1,dowm,len));
+        }
+    }
+}
+
+然后看题解，动态规划：
+使用一个长度为(text1.Length+1) * (text2.Length+1)的二维数组
+然后其中dp[i][j] 表示0-i和0-j的最长公共子序列
+首先考虑边界问题：当两个任一为长度为0时   它们的最长公共子序列必为0
+则有dp[0][0] = 0
+考虑状态转移方程：
+若text1[i] == text2[j]  则dp[i][j] = dp[i-1][j-1] + 1;
+若不相等   则取dp[i-1][j] 和 dp[i][j-1] 中的较大值
+C#代码如下：
+public class Solution {
+    public int LongestCommonSubsequence(string text1, string text2) {
+        int [,]dp = new int[text1.Length+1,text2.Length+1];
+        dp[0,0] = 0;
+        for(int i=1;i<text1.Length+1;i++){
+            for(int j=1;j<text2.Length+1;j++){
+                if(text1[i-1] == text2[j-1]){
+                    dp[i,j] = dp[i-1,j-1] + 1;
+                }else{
+                    dp[i,j] = Math.Max(dp[i,j-1],dp[i-1,j]);
+                }
+            }
+        }
+
+        return dp[text1.Length,text2.Length];
+    }
+}
