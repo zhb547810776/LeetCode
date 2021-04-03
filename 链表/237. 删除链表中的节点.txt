@@ -1,0 +1,22 @@
+此题挺有意思的
+一般删除链表中的值的时候
+一般是将指向该链表节点的前驱的指向改为删除节点的后继
+但此题中给的值只是需要删除的节点
+在无法获得前驱的情况下，该如何删除值就是需要考量的问题了
+可以将删除节点后继的值赋给删除节点
+然后将删除节点指向后继的指针指向  后继的后继
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public void DeleteNode(ListNode node) {
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+}
