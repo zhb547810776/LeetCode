@@ -1,0 +1,36 @@
+可以发现当兔子的答案不一样时，那肯定是两种不同颜色的兔子
+由于需要求的是最少数量，则我们应当将相同答案的兔子归纳起来
+因此选择使用哈希表  兔子的答案即为Key，说出相同答案的即为Value
+然后除非数量不足   否则都将其视为同一颜色(贪心)
+如说出4答案的兔子如果有6只
+按照贪心的思想 可以认为其中5只都是同一颜色的
+但仍然多出来了1只兔子  只能是另一个颜色了
+因此计算时   颜色数量为  (value/key)   向上取整的
+则兔子数量为   (int)Math.Ceiling(1.0 * value/key) * key
+C#代码如下：
+public class Solution {
+    public int NumRabbits(int[] answers) {
+        if(answers.Length == 0){
+            return 0;
+        }
+        Dictionary<int,int> rabbits = new Dictionary<int,int>();
+
+        for(int i = 0;i<answers.Length;i++){
+			//将报出的答案转化为该颜色总共的数量  加入哈希表
+            int num = answers[i]+1;
+            if(rabbits.ContainsKey(num)){
+                rabbits[num]++;
+            }else{
+                rabbits.Add(num,1);
+            }
+        }
+
+        int sum = 0;
+        foreach(int k in rabbits.Keys){
+            //向上取整
+            sum += (int)Math.Ceiling(1.0 * rabbits[k]/k) * k;
+        }
+
+        return sum;
+    }
+}
