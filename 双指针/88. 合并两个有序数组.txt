@@ -1,0 +1,28 @@
+由于题目给定的两个数组本身便是有序数组
+因此可以使用双指针对其进行一一比较
+且本身nums1的长度已经为n+m  且m之后都默认为0
+则可以从后往前赋值
+C#代码如下：
+public class Solution {
+    public void Merge(int[] nums1, int m, int[] nums2, int n) {
+        int pointer1 = m-1;
+        int pointer2 = n-1;
+        for(int i = m+n-1;i>=0;i--){
+            if(pointer2 == -1){
+                break;
+            }
+            if(pointer1 == -1){
+                nums1[i] = nums2[pointer2];
+                pointer2--;
+                continue;
+            }
+            if(nums1[pointer1] > nums2[pointer2]){
+                nums1[i] = nums1[pointer1];
+                pointer1--;
+            }else{
+                nums1[i] = nums2[pointer2];
+                pointer2--;
+            }
+        }
+    }
+}
