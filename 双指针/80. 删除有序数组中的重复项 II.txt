@@ -1,0 +1,73 @@
+先按照题目要求一步一步来
+已知此为有序数组，所以它相同的数必定是相邻的
+并且观察可以发现，使用for循环i步频为1时
+只有三种情况：
+第一种：两数相同且是出现的第一二次
+第二种：两数相同且是出现的二次以上
+第三种：两数不同
+题目要求使用O(1)的额外空间  若满足上述条件   只需要一个布尔值判断是否第一次相等
+第二次或以后相等的情况下  删除后者的值并冒泡移到最后
+C#代码如下：
+public class Solution {
+    public int RemoveDuplicates(int[] nums) {
+        int len = nums.Length;
+        if(len < 3){
+            return len;
+        }
+        bool isEqual = false;
+		//设置一个此数组原本没有的值
+        int minValue = nums[0]-1;
+        for(int i = 0;i<len-1;i++){
+            if(nums[i] == minValue){
+                break;
+            }
+            if(nums[i] == nums[i+1] && !isEqual){
+                isEqual = true;
+            }else if(nums[i] == nums[i+1] && isEqual){
+                //冒泡将数移到最后
+                len--;
+                nums[i+1] = minValue;
+                for(int j=i+1;j<len;j++){
+                    nums[j] = nums[j] + nums[j+1];
+                    nums[j+1] = nums[j] - nums[j+1];
+                    nums[j] = nums[j] - nums[j+1];
+                }
+                i--;
+            }else{
+                isEqual = false;
+            }
+        }
+
+        return len;
+    }
+}
+
+这种一步一步来的方法中冒泡花了很多时间需要将其优化一下
+可以发现返回的len后面具体是什么并不重要
+可以采取反向的思维
+即不是看我们从len开始删除了多少数
+由于len<=2的时候可以直接返回
+而是我们从2开始能够加多少值进去
+使用快慢指针的方式
+slow指针记录nums[0]到nums[slow-1]为最终求出来的满足题意的值
+fast指针记录nums[fast]是否满足要求
+C#代码如下：
+public class Solution {
+    public int RemoveDuplicates(int[] nums) {
+        int len = nums.Length;
+        if(len <= 2){
+            return len;
+        }
+        //前两个值必定满足要求
+        int slow = 2,fast = 2;
+        while(fast<len){
+            if(nums[fast] != nums[slow-2]){
+                nums[slow] = nums[fast];
+                slow++;
+            }
+            fast++;
+        }
+
+        return slow;
+    }
+}
