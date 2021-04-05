@@ -1,0 +1,84 @@
+由于第一时间没有想到该用怎么样的方法实现
+就按照题目要求  一步一步的求
+因此想到了递归的方式   然后可以将移动的位置k-1 传入下一次
+且每一次移动基本就是尾部变成了头部    尾部的前驱变成了新的尾部
+C#代码如下：
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int val=0, ListNode next=null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode RotateRight(ListNode head, int k) {
+		//k == 0 时，即移动完毕  退出，返回新的链表，且当原来的链表长度为0或1时 移动多少次都一样
+        if(k == 0 || head == null || head.next == null){
+            return head;
+        }
+        ListNode end = head;
+        ListNode endPre = null;
+        int count = 1;
+        while(end.next != null){
+            endPre = end;
+            end = end.next;
+            count++;
+        }
+		//可知k>=count时，会循环k/count次
+        k = k % count;
+        if(k == 0){
+            return head;
+        }
+
+        endPre.next = null;
+        end.next = head;
+
+        return RotateRight(end,k-1);
+
+    }
+}
+
+然后第一次做完后发现，每次将尾部的后继指向头部时   都会形成一个环
+我们可以一次性计算出k时环应该断掉的位置
+C#代码如下：
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int val=0, ListNode next=null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode RotateRight(ListNode head, int k) {
+        if(k==0 || head == null || head.next == null){
+            return head;
+        }
+        int count = 1;
+        ListNode end = head;
+        while(end.next != null){
+            end = end.next;
+            count++;
+        }
+        k = k % count;
+        if(k == 0){
+            return head;
+        }
+        //将链表连成环
+        end.next = head;
+        //找到环断掉的位置
+        for(int i=0;i < count - k - 1 ;i++){
+            head = head.next;
+        }
+        ListNode newHead = head.next;
+        head.next = null;
+        return newHead;
+    }
+}
