@@ -1,0 +1,42 @@
+有序数组的查找   因此使用对分查找
+但此数组会经过事先的移动
+但按住预定规则可知
+改变后的数组是[0~k-1]  [k~len-1]两段为有序的
+因此对分查找算出来的mid值 两边必有一边是有序的
+可以通过nums[0] num[mid] num[len-1]的比较知道mid左边还是右边是有序的
+然后在有序的部分计算target是否在此范围内 若在范围 便可以进行正常的对分查找
+若不在此范围内  则需要查询另外一边
+C#代码如下：
+public class Solution {
+    public int Search(int[] nums, int target) {
+        int len = nums.Length;
+        if (len == 0) {
+            return -1;
+        }
+        if (len == 1) {
+            return nums[0] == target ? 0 : -1;
+        }
+        int l = 0,r = len-1;
+        while(l <= r){
+            int mid = (l+r)/2;
+            if(nums[mid] == target){
+                return mid;
+            }
+            if(nums[0] <= nums[mid]){
+                if(nums[0] <= target && target < nums[mid]){
+                    r = mid-1;
+                }else{
+                    l = mid+1;
+                }
+            }else{
+                if(nums[mid] < target && target <= nums[len-1]){
+                    l = mid+1;
+                }else{
+                    r = mid-1;
+                }
+            }
+        }
+
+        return -1;
+    }
+}
