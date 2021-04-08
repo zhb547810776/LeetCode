@@ -1,0 +1,16 @@
+可知结果数组中nums[i]的值即nums[i-1]+num[i]
+从一遍历一遍数组  并将计算出来的值替换原来的值
+C#代码如下：
+public class Solution {
+    public int[] RunningSum(int[] nums) {
+        if(nums.Length == 0){
+            return new int [0];
+        }
+
+        for(int i=1;i<nums.Length;i++){
+            nums[i] = nums[i-1] + nums[i];
+        }
+
+        return nums;
+    }
+}
