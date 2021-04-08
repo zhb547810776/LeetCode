@@ -1,0 +1,29 @@
+153题的延伸题目	相对153题目，由于可以有重复数字的缘故
+可能会出现[2,2,2,2,0,2]这样左中右全相同的情况
+若出现此种情况   可以先左右指针同时移动一位
+然后按照之前的方法继续循环
+C#代码如下：
+public class Solution {
+    public int FindMin(int[] nums) {
+        int len = nums.Length;
+        if(len == 1){
+            return nums[0];
+        }
+        int l=0,r=len-1;
+        while(l<r){
+            int mid = (l+r)/2;
+            if(nums[mid]==nums[r] && nums[mid] == nums[l]){
+                l++;
+                r--;
+                continue;
+            }
+            if(nums[mid] <= nums[r]){
+                r = mid;
+            }else{
+                l = mid+1;
+            }
+        }
+
+        return nums[l];
+    }
+}
