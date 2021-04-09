@@ -1,0 +1,27 @@
+可以使用递归的方式  让传入的数字n反复除以2,3,5
+直到无法完全整除为止  即如果是丑数  最后的传入的值必定是1 此时返回true
+C#代码如下：
+public class Solution {
+    public bool IsUgly(int n) {
+        if(n == 0){
+            return false;
+        }
+        if(n == 1){
+            return true;
+        }
+
+        if(n%5 == 0){
+            return IsUgly(n/5);
+        }else if(n%3 == 0){
+            return IsUgly(n/3);
+        }else if(n%2 == 0){
+            return IsUgly(n/2);
+        }
+
+        return false;
+    }
+}
+
+看官方代码   说丑数可以定义为 2的a次+3的b次+5的c次
+若 a=b=c=0   则计算结果为n=1
+所以1是丑数
