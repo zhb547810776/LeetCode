@@ -1,0 +1,80 @@
+这题我并不知道要如何将丑数有序的排列起来
+然后看题解  学到了 优先级队列 这样一个原来没听过的队列
+java中是PriorityQueue	或者是使用SortedSet这样一个排序的set
+使用SortedSet的C#代码如下：
+public class Solution {
+    public int NthUglyNumber(int n) {
+        if(n == 1){
+            return 1;
+        }
+
+        SortedSet<long> ss = new SortedSet<long>();
+        ss.Add(1);
+
+        int count = 1;
+        while(count < n){
+            long min = ss.Min;
+            ss.Remove(min);
+            ss.Add(min*2);
+            ss.Add(min*3);
+            ss.Add(min*5);
+            count++;
+        }
+
+        return (int)ss.Min;
+    }
+}
+
+使用PriorityQueue的java代码如下：
+class Solution {
+    public int nthUglyNumber(int n) {
+        int[] factors = {2, 3, 5};
+        Set<Long> seen = new HashSet<Long>();
+        PriorityQueue<Long> heap = new PriorityQueue<Long>();
+        seen.add(1L);
+        heap.offer(1L);
+        int ugly = 0;
+        for (int i = 0; i < n; i++) {
+            long curr = heap.poll();
+            ugly = (int) curr;
+            for (int factor : factors) {
+                long next = curr * factor;
+                if (seen.add(next)) {
+                    heap.offer(next);
+                }
+            }
+        }
+        return ugly;
+    }
+}
+
+使用上述方法会导致存储过多的丑数，导致空间复杂度较高
+还能够使用动态规划的方法来进行优化
+定义dp[i]表示第i个丑数
+所以便有dp[1] = 1
+然后定义三个指针 表示下一个丑数是当前指针指向的丑数乘上对应的2,3,5
+所以指针刚开始全都指向1
+所以有dp[i] = Math.Min(dp[p2]*2,dp[p3]*3,dp[p5]*5)
+C#代码如下：
+public class Solution {
+    public int NthUglyNumber(int n) {
+        int []dp = new int [n+1];
+        dp[1] = 1;
+        int p2=1,p3=1,p5=1;
+        for(int i=2;i<=n;i++){
+            dp[i] = Math.Min(Math.Min(dp[p2]*2,dp[p3]*3),dp[p5]*5);
+            if(dp[i] == dp[p2]*2){
+                p2++;
+            }
+            if(dp[i] == dp[p3]*3){
+                p3++;
+            }
+            if(dp[i] == dp[p5]*5)
+            {
+                p5++;
+            }
+        }
+
+        return dp[n];
+    }
+}
