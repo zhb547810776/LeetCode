@@ -1,0 +1,39 @@
+由于需要最后将所有字符拼接起来
+因此需要将转换后的字符串数组按要求排序
+正常的按照它本身的Sort排序  在开头值不同时可以符合要求
+但形如[32,3]这样的 它的排序是不行的
+我们可以直接将两个字符串拼接起来比较
+即x+y 与 y+x 比较
+由于是字符串数组  是可以这样直接拼接比较的
+然后需要从高到底排序
+还有有个[0,0]的测试用例需要注意
+C#代码如下：
+public class Solution {
+    public string LargestNumber(int[] nums) {
+        int len = nums.Length;
+        String []strs = new String[len];
+
+        for(int i=0;i<len;i++){
+            strs[i] = nums[i].ToString();
+        }
+
+        Array.Sort(strs,(x,y) =>{
+            return (y+x).CompareTo(x+y);
+        });
+
+        StringBuilder sb = new StringBuilder();
+        foreach(String str in strs){
+            sb.Append(str);
+        }
+        string res = sb.ToString();
+		//处理字符串前面有0的情况
+        while(res.Length > 1){
+            if(res[0] == '0'){
+                res = res.Substring(1,res.Length-1);
+            }else{
+                break;
+            }
+        }
+        return res;
+    }
+}
