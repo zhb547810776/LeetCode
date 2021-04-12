@@ -1,0 +1,44 @@
+先将此题理解成为在一个有序数组中 获得两个不同值之间的最小差值
+那么很明显就一边遍历 然后计算相邻的值之间的差值 存放在res中差值的最小值
+因此二叉搜索树就是使用中序遍历的方法去计算相邻两个节点之间的最小的差值
+然后由于需要进行两个节点之间的差 在遍历的过程中又不好同时使用两个节点
+可以设置一个变量去存储前一个节点的值 计算完毕后将该值改为当前节点的值
+C#代码如下：
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+public class Solution {
+    int res;
+    int pre;
+
+    public int MinDiffInBST(TreeNode root) {
+        res = int.MaxValue;
+        pre = -1;
+        Dfs(root);
+        return res;
+    }
+
+    public void Dfs(TreeNode root){
+        if(root == null){
+            return ;
+        }        
+        Dfs(root.left);
+        if(pre == -1){
+            pre = root.val;
+        }else{
+            res = Math.Min(root.val-pre,res);
+            pre = root.val;
+        }
+        Dfs(root.right);
+    }
+}
