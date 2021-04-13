@@ -1,0 +1,73 @@
+第一时间看到树以为是二叉树
+树中的值存储一个字符串
+就想着按照传入字符串的比较值
+较小者放入当前的左边  较大值放入当前的右边
+但总觉得这样不太对 需要用一个栈去迭代树 而且按照这样也不好实现前缀树能够实现的自动补完和拼写检查
+
+然后看题解
+每个节点需要26个子节点 使用Trie数组 根据下标去判断对应的a-z
+然后插入的时候  遍历字符串  一个字符一个字符的插入
+如果  node.nodes[i] == null 就创建
+然后将当前节点转换到该节点  即node = node.nodes[i]
+然后当字符串遍历结束后   将当前节点的isEnd赋值为true  表示一个单词的结束点
+然后查找和寻找前缀	基本相同  查找需要在字符串遍历结束后多判断一下当前节点的isEnd是否为true
+C#代码如下：
+public class Trie
+{
+    private bool isEnd;
+    private Trie[] nodes;
+    /** Initialize your data structure here. */
+    public Trie()
+    {
+        isEnd = false;
+        nodes = new Trie[26];
+    }
+
+    /** Inserts a word into the trie. */
+    public void Insert(string word)
+    {
+        Trie node = this;
+        foreach (var a in word)
+        {
+            if (node.nodes[a - 'a'] == null){
+                node.nodes[a - 'a'] = new Trie();
+            }
+            node = node.nodes[a - 'a'];
+        }
+        node.isEnd = true;
+    }
+
+    /** Returns if the word is in the trie. */
+    public bool Search(string word)
+    {
+        Trie node = this;
+        foreach (var a in word)
+        {
+            node = node.nodes[a - 'a'];
+            if (node == null)
+                return false;
+        }
+        return node.isEnd;
+    }
+
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    public bool StartsWith(string prefix)
+    {
+        Trie node = this;
+        foreach (var a in prefix)
+        {
+            node = node.nodes[a - 'a'];
+            if (node == null)
+                return false;
+        }
+        return true;
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.Insert(word);
+ * bool param_2 = obj.Search(word);
+ * bool param_3 = obj.StartsWith(prefix);
+ */
