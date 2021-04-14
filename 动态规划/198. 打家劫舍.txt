@@ -1,0 +1,24 @@
+本题使用动态规划解决问题
+由于它必须每次跳一个
+定义一个数组dp[]存储第i位置的当前偷窃的最大值
+则可知dp[i] 是dp[i-1]与dp[i-2]+nums[i]中较大的那一个
+然后dp[0]只能等于nums[i]	即只有一间房屋  则偷窃该房屋
+dp[1]则是nums[0]和nums[1]中的较大值		即有两间房屋 偷窃其中金额多的一个
+然后可以发现每次计算只会需要两个值  即 之前的较大值+当前房屋的值  与  不计算当前i屋目前的最大值
+因此可以使用两个变量存储这两个值
+C#代码如下：
+public class Solution {
+    public int Rob(int[] nums) {
+        if(nums.Length == 0){
+            return 0;
+        }
+        int curMax = 0,preMax = 0;
+        for(int i=0;i<nums.Length;i++){
+            int temp = curMax;
+            curMax = Math.Max(preMax+nums[i],curMax);
+            preMax = temp;
+        }
+
+        return curMax;
+    }
+}

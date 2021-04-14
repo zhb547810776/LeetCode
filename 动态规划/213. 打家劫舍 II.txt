@@ -1,0 +1,35 @@
+本题基于198题，多了一个限制  即首尾是相连的
+无法偷了第一个同时偷最后一个
+那么我们可以如此考虑  便是不偷第一个或者不偷最后一个
+那么就获得[0,nums.Length-1]和[1,nums.Length]两个区域
+然后这两个区域可以按照之前动态规划的方法计算
+会获得两个结果值  取其中较大的一个即可
+C#代码如下：
+public class Solution {
+    public int Rob(int[] nums) {
+        if(nums.Length == 1){
+            return nums[0];
+        }
+        if(nums.Length == 2){
+            return Math.Max(nums[0],nums[1]);
+        }
+        //进行第一次计算 [0,nums.Length-1]
+        int curMax = 0,preMax = 0;
+        for(int i=0;i<nums.Length-1;i++){
+            int temp = curMax;
+            curMax = Math.Max(preMax+nums[i],curMax);
+            preMax = temp;
+        }
+        int res1 = curMax;
+
+        //进行第二次计算 [1,nums.Length]
+        curMax = 0;
+        preMax = 0;
+        for(int i=1;i<nums.Length;i++){
+            int temp = curMax;
+            curMax = Math.Max(preMax+nums[i],curMax);
+            preMax = temp;
+        }
+        return Math.Max(curMax,res1);
+    }
+}
