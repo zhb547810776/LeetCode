@@ -1,0 +1,100 @@
+不能说思索良久，只能说完全不会
+看了半天题解，有两种做法
+其一是动态规划
+可以将题目拆分成较小的问题  然后动态规划做出来
+首先 题目中说明了有两种情况
+不交换	此时将str1划分成s1和s2 将 str2划分为s3和s4   则s1转换到s3  s2转换到s4
+交换	相当于上面   将s1转换到s4  s2转换到s3
+然后设计dp数组
+我直接copy别人的题解了：S即字符串str1  T即字符串str2
+
+dp[i][j][k][h] 表示 T[k..h] 是否由 S[i..j] 变来
+由于变换必须长度是一样的，因此这边有个关系 j - i = h - k
+可以把四维数组降成三维。dp[i][j][len]
+表示从字符串S中i开始长度为len的字符串是否能变换为从字符串T中j开始长度为len的字符串
+
+然后我们将len从低往高递推
+首先可以遍历一遍 找到dp[i][j][1] 为true的值  此解为初始条件
+即S中的i位置与T中的j位置字符相同
+然后就可以找长度为2 然后推3....一直到长度为len
+C#代码如下：
+public class Solution {
+    public bool IsScramble(string s1, string s2) {
+        char[] ch1 = s1.ToCharArray();
+        char[] ch2 = s2.ToCharArray();
+        int len = s1.Length;
+
+        //定义dp
+        bool [,,]dp = new bool [len,len,len+1];
+        //定义当长度为1时的dp边界值
+        for(int i=0;i<len;i++){
+            for(int j=0;j<len;j++){
+                dp[i,j,1] = ch1[i] == ch2[j];
+            }
+        }
+        //长度为2-len的时候
+        for(int n=2;n<=len;n++){
+            //s1的起始点i
+            for(int i=0;i<=len-n;i++){
+                //s2的起始点j
+                for(int j=0;j<=len-n;j++){
+                    //划分位置	注意此处z的意义可以理解为长度为n的时候左边先分割z个下来
+					//比如：长度为2的时候即n=2	可以分割为左边1  右边2-1=1
+                    for(int z=1;z<=n-1;z++){
+                        //判断不交换的情况
+                        if(dp[i,j,z] && dp[i+z,j+z,n-z]){
+                            dp[i,j,n] = true;
+                            break;
+                        }
+                        //判断交换的情况
+                        if(dp[i,j+n-z,z] && dp[i+z,j,n-z]){
+                            dp[i,j,n] = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return dp[0,0,len];
+    }
+}
+
+或者使用递归的方式，此题数据量相对不多
+递归也可以通过(C#貌似不行，我提交了两次，全部在一个较长的字符串中超出时间限制了)
+递归大方向上也是将问题拆分成小问题然后进行判断
+只要找到一个解 便会返回true
+C#代码如下：
+public class Solution {
+    public bool IsScramble(string s1, string s2) {
+        if(s1 == null || s2 == null){
+            return false;
+        }
+        if(s1 == s2){
+            return true;
+        }
+        int []letters = new int[26];
+        for(int i=0;i<s1.Length;i++){
+            letters[s1[i] - 'a']++;
+            letters[s2[i] - 'a']--;
+        }
+        //若s1和s2字符不完全相同   一定不符合题意
+        for(int i=0;i<26;i++){
+            if(letters[i] != 0){
+                return false;
+            }
+        }
+        int len = s1.Length;
+        for(int i=1;i<len;i++){
+            //考虑不交换的情况
+            if(IsScramble(s1.Substring(0,i),s2.Substring(0,i)) && IsScramble(s1.Substring(i),s2.Substring(i))){
+                return true;
+            }
+            //考虑交换的情况
+            if(IsScramble(s1.Substring(0,i),s2.Substring(len-i)) && IsScramble(s1.Substring(i),s2.Substring(0,len-i))){
+                return true;
+            }
+        }
+        return false;
+    }
+}
