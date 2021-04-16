@@ -1,0 +1,73 @@
+暴力算法会导致时间超过限制
+本题是可以使用滑动窗口+有序集合
+可知滑动窗口的长度为k
+然后在java中可以使用TreeSet存储其中的数据
+然后寻找满足大于x-t的最小值ceiling是否小于等于x+t
+满足条件便返回true
+然后为了防止int溢出，可以使用long
+java代码如下：
+class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        int n = nums.length;
+        TreeSet<Long> set = new TreeSet<Long>();
+        for (int i = 0; i < n; i++) {
+            Long ceiling = set.ceiling((long) nums[i] - (long) t);
+            if (ceiling != null && ceiling <= (long) nums[i] + (long) t) {
+                return true;
+            }
+            set.add((long) nums[i]);
+            if (i >= k) {
+                set.remove((long) nums[i - k]);
+            }
+        }
+        return false;
+    }
+}
+
+然后也可以是使用利用桶排序的思想解决问题
+设定桶的大小为t+1然后去维护一个滑动窗口内的元素
+若超过该滑动窗口了  将加入的值删除
+如此  当一个桶内存有两个元素的时候
+就说明在大小为k的滑动窗口内	存在满足两数差小于等于t的值
+还有一种情况  当两个桶为相邻桶的时候可以直接校验两个元素的差值是否小于等于t
+可以使用哈希表来实现
+C#代码如下：
+public class Solution {
+    public bool ContainsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        int len = nums.Length;
+        Dictionary<long,long> dic = new Dictionary<long,long>();
+
+        //定义桶的长度
+        long w = (long)t+1;
+        for(int i=0;i<len;i++){
+            //计算当前值所在的桶
+            long id = GetID(nums[i],w);
+            //是否在同一个桶内
+            if(dic.ContainsKey(id)){
+                return true;
+            }
+            //是否在相邻桶内
+            if(dic.ContainsKey(id+1) && Math.Abs(nums[i] - dic[id+1]) <= t){
+                return true;
+            }
+            if(dic.ContainsKey(id-1) && Math.Abs(nums[i] - dic[id-1]) <= t){
+                return true;
+            }
+            dic.Add(id,(long) nums[i]);
+            if(i >= k){
+                dic.Remove(GetID(nums[i-k],w));
+            }
+        }
+
+        return false;
+    }
+    public long GetID(long x,long w){
+		//判断元素在哪一个桶内
+        if(x>=0){
+            return x/w;
+        }else{
+			//x<0时候如此判断它的桶
+            return (x+1)/w-1;
+        }
+    }
+}

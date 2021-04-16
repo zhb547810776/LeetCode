@@ -15,7 +15,7 @@ public class Solution {
     }
 }
 
-还有看到不适用Substring方法的代码
+还有看到不使用Substring方法的代码
 java代码如下：
 class Solution {
     public int strStr(String haystack, String needle) {
