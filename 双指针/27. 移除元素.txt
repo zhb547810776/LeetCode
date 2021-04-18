@@ -1,0 +1,25 @@
+和26题和80题基本类似
+定义一个双指针
+因为元素顺序可以改变 所以这里有很多种做法
+可以前面定义两个从0开始的快慢指针
+当nums[fast] =! val 时 赋值nums[slow]=nums[fast]
+我选择定义两个fast = len-1;slow = len-1;
+两个从后往前遍历
+然后当nums[fast] == val时 赋值nums[fast] = nums[slow] 然后slow--；
+然后return ++slow
+C#代码如下：
+public class Solution {
+    public int RemoveElement(int[] nums, int val) {
+        int len = nums.Length;
+        int fast=len-1,slow=len-1;
+        while(fast >= 0){
+            if(nums[fast] == val){
+                nums[fast] = nums[slow];
+                slow--;
+            }
+            fast--;
+        }
+
+        return ++slow;
+    }
+}
