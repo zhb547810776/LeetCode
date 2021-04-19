@@ -32,3 +32,5 @@ class Solution {
     return -1;
     }
 }
+
+看了看官方说的KMP算法   脑袋有点大，下次再说 呜呜呜 我好弱
