@@ -1,0 +1,56 @@
+很明显的动态规划题目
+将dp[i-1] 记作 [0~i-1]的解码方法个数
+那么最后一次解码会有两种情况
+一是只要s[i] != 0 那么就可以单独作为一个字符进行解码
+那么dp[i] = dp[i-1]
+二是使用了两个字符,那么这种情况下s[i-1] 不能等于0
+并且s[i-1]和s[i] 组成的整数小于26
+那么 dp[i] = dp[i-2]
+若两种情况都可以满足  那么dp[i] = dp[i-1] + dp[i-2]
+然后注意边界条件dp[0] = 1 可以理解成空字符串可以解码出一个空字符串的解码方法
+C#代码如下：
+public class Solution {
+    public int NumDecodings(string s) {
+        int len = s.Length;
+        int []dp = new int [len+1];
+        //空字符串有一种解码方法
+        dp[0] = 1;
+
+        for(int i = 1;i<=len;i++){
+            if(s[i-1] != '0'){
+                dp[i] += dp[i-1];
+            }
+
+            if(i>1 &&  s[i-2]!= '0' && ((s[i-2]-'0')*10+s[i-1]-'0') <= 26){
+                dp[i] += dp[i-2];
+            }
+        }
+
+        return dp[len];
+    }
+}
+
+可知一共只使用了三个数 i i-1 i-2
+可以将数组优化为三个变量存储
+C#代码如下：
+public class Solution {
+    public int NumDecodings(string s) {
+        int len = s.Length;
+        //a == dp[i-2] b = dp[i-1] c = dp[i]
+        int a = 0,b=1,c = 0;
+        for(int i = 1;i<=len;i++){
+            c = 0;
+            if(s[i-1] != '0'){
+                c += b;
+            }
+
+            if(i>1 &&  s[i-2]!= '0' && ((s[i-2]-'0')*10+s[i-1]-'0') <= 26){
+                c += a;
+            }
+            a = b;
+            b = c;
+        }
+
+        return c;
+    }
+}
