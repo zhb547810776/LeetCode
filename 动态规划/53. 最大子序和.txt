@@ -1,0 +1,22 @@
+这道题主要是要注意什么时候将原来的部分舍弃  重新找子数组
+我们定义一个sum表示它的和	如果sum<0 那么就说明当前的子数组该舍弃的
+重新找一个正数就能够大于这时候的子数组
+然后可以定义一个max去记录出现过的最大值
+每次sum计算完之后 就比较当前的sum和max
+C#代码如下：
+public class Solution {
+    public int MaxSubArray(int[] nums) {
+        int ans = nums[0];
+        int sum = 0;
+        for(int i=0;i<nums.Length;i++){
+            if(sum < 0){
+                sum = nums[i];
+            }else{
+                sum += nums[i];
+            }
+            ans = Math.Max(ans,sum);
+        }
+
+        return ans;
+    }
+}

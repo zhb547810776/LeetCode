@@ -1,0 +1,65 @@
+本题基本不会  看了半天别人的题解
+最后做出来的
+我自己解释也不如他
+直接附上题解链接：
+https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/solution/javacong-bao-li-kai-shi-you-hua-pei-tu-pei-zhu-shi/
+然后我自己写的C#代码如下：
+public class Solution {
+    public int MaxSumSubmatrix(int[][] matrix, int k) {
+        int rows = matrix.Length;
+        int cols = matrix[0].Length;
+        int max = int.MinValue;
+
+        //枚举左边界
+        for(int l=0;l<cols;l++){        
+            int []rowSum = new int [rows];
+            //枚举右边界
+            for(int r=l;r<cols;r++){
+                for(int i=0;i<rows;i++){
+                    rowSum[i] += matrix[i][r];
+                }
+                max = Math.Max(max,DpMax(rowSum,k));
+                if(max == k){
+                    return max;
+                }
+            }
+        }
+
+        return max;
+    }
+
+    public int DpMax(int []arr,int k){
+        int rowSum = arr[0];
+        int rowMax = rowSum;
+        
+        for(int i=1;i<arr.Length;i++){
+            if(rowSum < 0){
+                rowSum = arr[i];
+            }else{
+                rowSum += arr[i];
+            }
+            if(rowSum > rowMax){
+                rowMax = rowSum;
+            }
+        }
+
+        if(rowMax <= k){
+            return rowMax;
+        }
+
+        int max = int.MinValue;
+        for(int i=0;i<arr.Length;i++){
+            int sum = 0;
+            for(int j=i;j<arr.Length;j++){
+                sum += arr[j];
+                if(sum > max && sum < k){
+                    max = sum;
+                }
+                if(sum == k){
+                    return k;
+                }
+            }
+        }
+        return max;
+    }
+}
