@@ -1,0 +1,66 @@
+不需要去寻找具体解  只要求最优解   很经典的动态规划题目
+我们可以定义一个dp[i]代表从[0~i]位置时的严格递增子序列的最大长度
+然后由于每个位置都可能作为起点 那么它的长度都至少是1	我们可以将dp[]所有值都赋值为1
+然后定义边界值dp[0]=1 它作为起点  它的长度只能是1
+然后我们去判断nums[i] 是否大于之前nums[j]的值   若大于则它就可以有dp[i] = dp[j]+1
+但可能存在多个满足条件的值  因此需要判断其中的最大值赋值到dp[i]
+然后可以定义一个max用于记录最大的长度
+C#代码如下：
+public class Solution {
+    public int LengthOfLIS(int[] nums) {
+        int len = nums.Length;
+        int []dp = new int[len];
+        Array.Fill(dp,1);
+        int max = 1;
+        for(int i=1;i<len;i++){
+            for(int j=0;j<i;j++){
+                if(nums[i] > nums[j]){
+                    dp[i] = Math.Max(dp[i],dp[j]+1);
+                }
+            }
+            if(dp[i] > max){
+                max = dp[i];
+            }
+        }
+
+        return max;
+    }
+}
+
+然后上述方法是时间复杂度为O(n²)的方法
+然后看到题解  有修改状态定义的动态规划方法   时间复杂度为O(nlog(n))
+虽然我看懂了  但是确实无法写的如人家详细  且人家带上图片更易理解
+附上他人题解链接：
+https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/dong-tai-gui-hua-er-fen-cha-zhao-tan-xin-suan-fa-p/
+以下是我根据此题解的C#代码：
+public class Solution {
+    public int LengthOfLIS(int[] nums) {
+        int len = nums.Length;
+
+        int []tail = new int[len];
+        tail[0] = nums[0];
+        int tailLen = 0;
+
+        for(int i=1;i<len;i++){
+            if(nums[i] > tail[tailLen]){
+                tail[++tailLen] = nums[i];
+            }else{
+                int left = 0;
+                int right = tailLen;
+
+                while(left<right){
+                    int mid = (right-left)/2 + left;
+                    if(tail[mid] < nums[i]){
+                        left = mid+1;
+                    }else{
+                        right = mid;
+                    }
+                }
+                
+                tail[left] = nums[i];
+            }
+        }
+
+        return ++tailLen;
+    }
+}

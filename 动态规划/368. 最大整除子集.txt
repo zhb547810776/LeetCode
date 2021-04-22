@@ -1,0 +1,59 @@
+呜呜呜  又是看题解的一天
+根据题意  假定现在有一个以满足题意的整除子集
+那么想要往里面加值  只有两种情况
+1.能够被其中的最小值整除
+2.能够将其中的最大值整除
+因此可以使用动态规划来解决题目
+我们可以定义dp[i] 代表 nums[i] 必定存在里面且其内的所有值都小于nums[i]的子集最大数
+因此  为了更好计算  我们需要将数组排序
+由于每个值必定被选择  所以需要先将dp中的所有值定义为1
+同时nums[0]作为最小值  dp[0]=1
+然后 根据 “能够将其中的最大值整除”这一条件
+可知if(nums[i] % nums[j]==0)dp[i] = dp[j]+1;
+由于可能拥有多个满足条件的nums[j]  需要取最大值
+然后就是输出了
+我们定义一个maxSize和maxValue来记录最大长度和最大值
+然后当我们对dp[]赋完值后
+可以从后向前遍历dp  找到等于maxSize的dp[i]  那么此时将nums[i]加入List
+同时更改maxValue和maxSize的值 maxValue = nums[i];maxSize--;
+然后去找等于maxSize且可被maxValue整除的值
+C#代码如下：
+public class Solution {
+    public IList<int> LargestDivisibleSubset(int[] nums) {
+        int len = nums.Length;
+        Array.Sort(nums);
+        
+        int []dp = new int[len];
+        int maxValue = nums[0];
+        int maxSize = 1;
+        Array.Fill(dp,1);
+
+        for(int i=1;i<len;i++){
+            for(int j=0;j<i;j++){
+                if(nums[i] % nums[j] == 0){
+                    dp[i] = Math.Max(dp[i],dp[j]+1);
+                }
+            }
+            if(dp[i] > maxSize){
+                maxSize = dp[i];
+                maxValue = nums[i];
+            }
+        }
+
+        List<int> res = new List<int>();
+        if(maxSize == 1){
+            res.Add(nums[0]);
+            return res;
+        }
+
+        for(int i=len-1;i>=0 && maxSize>0;i--){
+            if(dp[i] == maxSize && maxValue % nums[i] ==0){
+                res.Add(nums[i]);
+                maxValue = nums[i];
+                maxSize--;
+            }
+        }
+
+        return res;
+    }
+}
