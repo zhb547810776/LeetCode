@@ -1,0 +1,31 @@
+这次做题发现了一个题解(用一种规律搞定背包问题)
+本题使用动态规划
+规定dp[i] 代表和为i的时候存在多少种组合
+然后定义边界dp[0] = 1 即和为0时应该没有元素  这样和才为0
+然后由于定义的是i时存在的组合数量
+比如dp[3] = 5 时  那么如果我们现在正在计算dp[4]
+此时我们发现了一个nums中的值num=1   
+然后我们是将新加入的num值放在组合最后面的
+则dp[3]的5种都可以加一个1	则可以代表dp[4]
+那么很明显dp[4] += dp[3]
+即可以概括为dp[4] += dp[4-1]
+即dp[i] += dp[i-num]
+上述我们发现  我们需要两个循环
+外层循环遍历dp的长度  去计算dp
+内层循环去遍历nums去寻找dp[i-num]的值  当然需要保证num<=i
+C#代码如下：
+public class Solution {
+    public int CombinationSum4(int[] nums, int target) {
+        int []dp = new int[target+1];
+        dp[0] = 1;
+        for(int i=1;i<=target;i++){
+            foreach(int num in nums){
+                if(num <= i){
+                    dp[i] += dp[i-num];
+                }
+            }
+        }
+
+        return dp[target];
+    }
+}
