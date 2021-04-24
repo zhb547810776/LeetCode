@@ -39,3 +39,35 @@ public class Solution {
     }
 
 }
+
+然后也可以中序遍历的时候修改节点指向
+我们可以将遍历到的节点的左孩子设为空
+并将其作为上一个遍历到的节点的右孩子
+官方题解有图  可以更好理解
+链接如下：
+https://leetcode-cn.com/problems/increasing-order-search-tree/solution/di-zeng-shun-xu-cha-zhao-shu-by-leetcode-dfrr/
+Java代码如下：
+class Solution {
+    private TreeNode resNode;
+
+    public TreeNode increasingBST(TreeNode root) {
+        TreeNode dummyNode = new TreeNode(-1);
+        resNode = dummyNode;
+        inorder(root);
+        return dummyNode.right;
+    }
+
+    public void inorder(TreeNode node) {
+        if (node == null) {
+            return;
+        }
+        inorder(node.left);
+
+        // 在中序遍历的过程中修改节点指向
+        resNode.right = node;
+        node.left = null;
+        resNode = node;
+
+        inorder(node.right);
+    }
+}
