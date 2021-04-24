@@ -1,0 +1,41 @@
+就先中序遍历把值加入到一个集合中
+然后遍历集合的同时创建一个只有右子树的树
+通过构造函数将值作为右子树的val即可
+C#代码如下：
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+public class Solution {
+    public TreeNode IncreasingBST(TreeNode root) {
+        List<int> res = new List<int>();
+        Dfs(root, res);
+        
+        TreeNode dummyNode = new TreeNode(-1);
+        TreeNode currNode = dummyNode;
+        foreach(int value in res) {
+            currNode.right = new TreeNode(value);
+            currNode = currNode.right;
+        }
+        return dummyNode.right;
+    }
+
+    public void Dfs(TreeNode node, List<int> res) {
+        if (node == null) {
+            return;
+        }
+        Dfs(node.left, res);
+        res.Add(node.val);
+        Dfs(node.right, res);
+    }
+
+}
