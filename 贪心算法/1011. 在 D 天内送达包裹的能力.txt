@@ -1,0 +1,43 @@
+首先  我们只要能继续装货  那就一定会装  这就是贪心的思想
+然后我们可以推测能装货的最小值一定大于 货物重量数组的最大值
+否则直接就无法继续装了
+然后推测它的最大值就是装一次的时候   那么就是数组之和
+那么我们就找到了它的左右边界
+我们可以这样理解 最低运载能力  即低于该值就无法在D天内完成
+那么我们其实就是要二分寻找到能完成的时候  同时确保它低1就无法完成
+C#代码如下：
+public class Solution {
+    public int ShipWithinDays(int[] weights, int D) {
+        int sum = 0;
+        int maxWeight = 0;
+        for(int i=0;i<weights.Length;i++){
+            sum += weights[i];
+            if(weights[i] > maxWeight){
+                maxWeight = weights[i];
+            }
+        }
+
+        int left = maxWeight,right = sum;
+        while(left<right){
+            int mid = (left+right)/2;
+            int need = 1;
+            int cur = 0;
+            foreach(int weight in weights){
+                if(cur + weight > mid){
+                    need++;
+                    cur = 0;
+                }
+                cur += weight;
+            }
+
+            if(need <= D){
+				//如果答案正好是此值  那么mid-1可能会跳过正确答案
+                right = mid;
+            }else{
+                left = mid+1;
+            }
+        }
+
+        return left;
+    }
+}
