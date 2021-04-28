@@ -1,0 +1,83 @@
+首先 可以使用内置的Sqrt()函数
+根据a²+b²=c
+我们遍历a的时候  可以有t = c-a*a
+如此  我们判断Math.Sqrt(t) 是否为整数即可
+C#代码如下：
+public class Solution {
+    public bool JudgeSquareSum(int c) {
+        if(c == 0){
+            return true;
+        }
+        for(int i=0;i<Math.Sqrt(c);i++){
+            int t = c-i*i;
+            if(t == 0){
+                return true;
+            }
+            if(Math.Sqrt(t) % 1 == 0){
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+然后 可以使用双指针的方式来完成
+令a<=b 则有  i<=a<=b<=j
+只要i²+j²>c 就令j--
+i²+j²<c 就令i++
+C#代码如下：
+public class Solution {
+    public bool JudgeSquareSum(int c) {
+        int l = 0,r = (int)Math.Sqrt(c);
+        while(l<=r){
+            int sum = l*l+r*r;
+
+            if(sum == c){
+                return true;
+            }
+
+            if(sum>c){
+                r--;
+            }else{
+                l++;
+            }
+        }
+
+        return false;
+    }
+}
+
+还有看题解有一个数学规律法
+
+官方题解：
+费马平方和定理告诉我们：
+一个非负整数 cc 如果能够表示为两个整数的平方和，当且仅当 cc 的所有形如 4k + 34k+3 的质因子的幂均为偶数。
+
+因此我们需要对 cc 进行质因数分解，再判断所有形如 4k + 34k+3 的质因子的幂是否均为偶数即可。
+java代码如下：
+class Solution {
+    public boolean judgeSquareSum(int c) {
+        for (int base = 2; base * base <= c; base++) {
+            // 如果不是因子，枚举下一个
+            if (c % base != 0) {
+                continue;
+            }
+
+            // 计算 base 的幂
+            int exp = 0;
+            while (c % base == 0) {
+                c /= base;
+                exp++;
+            }
+
+            // 根据 Sum of two squares theorem 验证
+            if (base % 4 == 3 && exp % 2 != 0) {
+                return false;
+            }
+        }
+
+      	// 例如 11 这样的用例，由于上面的 for 循环里 base * base <= c ，base == 11 的时候不会进入循环体
+      	// 因此在退出循环以后需要再做一次判断
+        return c % 4 != 3;
+    }
+}
