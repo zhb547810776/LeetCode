@@ -1,0 +1,33 @@
+我们可设dp[i,k]为现在所在的石子编号i以及上一次跳跃的距离k
+然后可知上次的位置为j 则有stones[i] - stones[j] = k
+那么在j石子上  存在k-1,k,k+1三种情况  只要三种情况符合一种
+即dp[i,k]为true
+然后当i==len-1时  只要存在一个k使得dp[i,k]为true 则证明至少有一条路可以抵达终点 
+C#代码如下：
+public class Solution {
+    public bool CanCross(int[] stones) {
+        int len = stones.Length;
+        bool [,] dp = new bool[len,len];
+        dp[0,0] = true;
+        //下面情况下 属于中间有一个比较大的间隙  且哪怕每次k+1仍然距离不够
+        for(int i = 1;i<len;i++){
+            if(stones[i] - stones[i-1] > i){
+                return false;
+            }
+        }
+
+        for(int i=1;i<len;i++){
+            for(int j=i-1;j>=0;j--){
+                int k = stones[i] - stones[j];
+                if(k > j+1){
+                    break;
+                }
+                dp[i,k] = dp[j,k-1] || dp[j,k] || dp[j,k+1];
+                if(i==len-1 && dp[i,k]){
+                    return true;
+                } 
+            }
+        }
+        return false;
+    }
+}
