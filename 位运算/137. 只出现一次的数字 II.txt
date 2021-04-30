@@ -1,0 +1,75 @@
+最简单的方法   哈希表
+我们遍历数组的时候  每次将Key中Value+1
+那么遍历哈希表的时候   Value=1的就是答案了
+C#代码如下：
+public class Solution {
+    public int SingleNumber(int[] nums) {
+        Dictionary<int,int> dic = new Dictionary<int,int>();
+        for(int i =0;i<nums.Length;i++){
+            if(!dic.ContainsKey(nums[i])){
+                dic.Add(nums[i],1);
+            }else{
+                dic[nums[i]]++;
+            }
+        }
+
+        foreach(var item in dic){
+            if(item.Value == 1){
+                return item.Key;
+            }
+        }
+
+        return 0;
+    }
+}
+比如现有数组
+3	0011
+3	0110
+6	0011
+3	0011
+然后他们相加  可以发现为  0143
+我们发现不能被3整除的位置就是单独的数
+Java代码如下：
+public int singleNumber(int[] nums) {
+        //最终的结果值
+        int res = 0;
+        //int类型有32位，统计每一位1的个数
+        for (int i = 0; i < 32; i++) {
+            //统计第i位中1的个数
+            int oneCount = 0;
+            for (int j = 0; j < nums.length; j++) {
+                oneCount += (nums[j] >>> i) & 1;
+            }
+            //如果1的个数不是3的倍数，说明那个只出现一次的数字
+            //的二进制位中在这一位是1
+            if (oneCount % 3 == 1)
+                res |= 1 << i;
+        }
+        return res;
+    }
+
+首先 由于异或有几个性质
+a^a=0 任何数字和自己异或结果是0
+a^0=a 任何数字和0异或还是他自己
+a^b^c=a^c^b 异或运算具有交换律
+然后  如果出现的次数是偶数次   只要把所有元素异或一遍  得出的就是答案了
+而如果是奇数次  可以如下解决：
+Java代码如下：
+// n是出现的次数
+public int findOnce(int[] nums, int n) {
+    int bitLength = 32;
+    int res = 0;
+    for (int i = 0; i < bitLength; i++) {
+        int oneCount = 0;
+        for (int j = 0; j < nums.length; j++) {
+            oneCount += (nums[j] >>> i) & 1;
+        }
+        if (oneCount % n != 0)
+            res |= (1 << i);
+    }
+    return res;
+}
+
+然后还有数字电路设计的  看的头大   我GG了
+官方题解：
+https://leetcode-cn.com/problems/single-number-ii/solution/zhi-chu-xian-yi-ci-de-shu-zi-ii-by-leetc-23t6/
