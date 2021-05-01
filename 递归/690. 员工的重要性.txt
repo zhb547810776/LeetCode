@@ -1,0 +1,62 @@
+此题可以使用递归 也可以迭代
+方法多样   不过注意需要先遍历一遍 使用一个Map/Dictionary来存储数据
+不如会需要多一层循环来寻找id对应的员工   会大幅度导致时间复杂度增加
+我是使用stack来求的   queue也可以   在这题里面这两个都可以实现
+C#代码如下：
+/*
+// Definition for Employee.
+class Employee {
+    public int id;
+    public int importance;
+    public IList<int> subordinates;
+}
+*/
+
+class Solution {
+    public int GetImportance(IList<Employee> employees, int id) {
+        int SumImportance = 0;
+        Dictionary<int,Employee> dic = new Dictionary<int,Employee>();
+        Stack<int> s = new Stack<int>();
+
+        foreach(var employee in employees){
+            dic.Add(employee.id,employee);
+        }
+
+        s.Push(id);
+
+        while(s.Count > 0){
+            int tempId = s.Pop();
+            Employee e = dic[tempId];
+
+            SumImportance += e.importance;
+
+            foreach(int item in e.subordinates){
+                s.Push(item);
+            }
+        }
+
+        return SumImportance;
+    }
+}
+
+附加一个java深度遍历的：
+class Solution {
+    Map<Integer, Employee> map = new HashMap<Integer, Employee>();
+
+    public int getImportance(List<Employee> employees, int id) {
+        for (Employee employee : employees) {
+            map.put(employee.id, employee);
+        }
+        return dfs(id);
+    }
+
+    public int dfs(int id) {
+        Employee employee = map.get(id);
+        int total = employee.importance;
+        List<Integer> subordinates = employee.subordinates;
+        for (int subId : subordinates) {
+            total += dfs(subId);
+        }
+        return total;
+    }
+}
