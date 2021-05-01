@@ -1,0 +1,36 @@
+我们需要记录除两个边缘的左右边界   然后找到一个边界值最大的 这样沿着这条线穿过的砖块最少
+因此我们需要每一行都记录边界值
+比如三行如下所示[1,2,2,1] [3,1,2] [1,3,2]
+那么我们应该如此记录 1:1 3:1 5:1
+					3:2 4:1
+					1:2	4:2
+6就是右边界了不记录了   然后我们发现最多的有边界值为3和4的都为2
+因此在这两列画就能够找到沿这条线穿过的砖块最少
+然后如上述记录的话很明显我们能够发现这就是哈希表的记录方法
+因此我们可以使用Dictionary来记录边界数
+C#代码如下：
+public class Solution {
+    public int LeastBricks(IList<IList<int>> wall) {
+        Dictionary<int,int> dic = new Dictionary<int,int>();
+        foreach(var list in wall){
+            int sum = 0;
+            //不算右边界  因此i<list.Count-1
+            for(int i=0;i<list.Count-1;i++){
+                //先加在算  不管左边界
+                sum += list[i];
+                if(dic.ContainsKey(sum)){
+                    dic[sum]++;
+                }else{
+                    dic.Add(sum,1);
+                }
+            }
+        }
+        //min最大的情况等于wall.Count  即穿过所有砖块
+        int min = wall.Count;
+        foreach(var item in dic){
+            min = Math.Min(min,wall.Count-item.Value);
+        }
+
+        return min;
+    }
+}
