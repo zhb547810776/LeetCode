@@ -1,0 +1,29 @@
+翻转一个整数
+例如123这样的数
+我们可以取原数的最后一位  然后将其置为返回整数的第一位
+即	123
+	12    3
+	1    32
+	    321
+只是要注意一下有些整数反转后会超出int的界限
+C#代码如下：
+public class Solution {
+    public int Reverse(int x) {
+        int res = 0;
+        while(x != 0){
+            int temp = x%10;
+            x /= 10;
+            //最大值溢出判断
+            if(temp > 0 && res > (int.MaxValue-temp)/10){
+                return 0;
+            }
+
+            if(temp < 0 && res < (int.MinValue-temp)/10){
+                return 0;
+            }
+
+            res = res * 10 + temp;
+        }
+        return res;
+    }
+}
