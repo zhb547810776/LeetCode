@@ -1,0 +1,84 @@
+这道题就是打家劫舍的演化版本
+我们可以这么看   由于我们获得点数nums[i]之后会删除nums[i]+1和nums[i]-1的值
+但不会删除nums[i]的值   因此我们可以将形如[1,1,1,1,1,2,2,2,3,3,4,4,4,4]的数组化为
+[5,6,6,16]的sum数组  这样就是符合打家劫舍要求的数组了
+我们可以对这样的数组使用打家劫舍的动态规划去完成
+因此我们可以创建一个sum[max+1]的数组  max为nums中的最大值
+然后使用打家劫舍的方式去完成
+java代码如下：
+class Solution {
+    public int deleteAndEarn(int[] nums) {
+        int maxVal = 0;
+        for (int val : nums) {
+            maxVal = Math.max(maxVal, val);
+        }
+        int[] sum = new int[maxVal + 1];
+        for (int val : nums) {
+            sum[val] += val;
+        }
+        return rob(sum);
+    }
+
+    public int rob(int[] nums) {
+        int size = nums.length;
+        int first = nums[0], second = Math.max(nums[0], nums[1]);
+        for (int i = 2; i < size; i++) {
+            int temp = second;
+            second = Math.max(first + nums[i], second);
+            first = temp;
+        }
+        return second;
+    }
+}
+
+但是由于nums数组中有些值是不连续的  会导致sum数组中会出现一堆0  会造成浪费
+然后我们可以知道  sum数组中符合连续的可以使用打家劫舍的方式完成   单个的可以直接加入结果
+而0我们可以直接忽略	因此我们可以就转换思路找出sum数组中不为0的部分	对其单独使用打家劫舍的方式
+为了确保连续  我们可以对数组进行排序  然后一旦找到的nums[i] != num[i-1] || num[i] != nums[i-1]+1
+那么他们就已经不连续了   我们可以对之前的部分使用Rob方法计算结果   一直到遍历完成
+注意  完成后需要在进行一遍Rob方法
+C#代码如下：
+public class Solution {
+    public int DeleteAndEarn(int[] nums) {
+        int len = nums.Length;
+        int res = 0;
+        Array.Sort(nums);
+        IList<int> sum = new List<int>();
+
+        sum.Add(nums[0]);
+        int size = 1;
+        for(int i=1;i<len;i++){
+            int temp = nums[i];
+            if(temp == nums[i-1]){
+                sum[size-1] += temp;
+            }else if(temp == nums[i-1]+1){
+                sum.Add(temp);
+                size++;
+            }else{
+                res += Rob(sum);
+                sum.Clear();
+                sum.Add(temp);
+                size = 1;
+            }
+        }
+        res += Rob(sum);
+
+        return res;
+    }
+
+    public int Rob(IList<int> sum){
+        if(sum.Count == 1){
+            return sum[0];
+        }
+        int max = Math.Max(sum[1],sum[0]);
+        int before = sum[0];
+
+        for(int i=2;i<sum.Count;i++){
+            int temp = max;
+            max = Math.Max(before+sum[i],max);
+            before = temp;
+        }
+
+        return max;
+    }
+}

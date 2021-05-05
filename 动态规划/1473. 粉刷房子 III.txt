@@ -1,0 +1,3 @@
+遇到困难睡大觉  呜呜呜~~~
+官方题解：
+https://leetcode-cn.com/problems/paint-house-iii/solution/fen-shua-fang-zi-iii-by-leetcode-solutio-powb/
