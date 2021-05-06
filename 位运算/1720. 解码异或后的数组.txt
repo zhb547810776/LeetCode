@@ -1,0 +1,19 @@
+简单题   就按照给的定义反推就好
+可知道encoded[i] = arr[i] ^(XOR) arr[i+1];
+然后拥有编码后的数组和原数组的第一位
+可知encoded[0] = arr[0] ^ arr[1]
+就如上我们知道了encoded[0] 以及 arr[0] 则可求得
+arr[1] = encoded[0] ^ arr[0]
+然后依次类推即可
+C#代码如下：
+public class Solution {
+    public int[] Decode(int[] encoded, int first) {
+        int []res = new int[encoded.Length+1];
+        res[0] = first;
+        for(int i=0;i<encoded.Length;i++){
+            res[i+1] = encoded[i] ^ res[i];
+        }
+
+        return res;
+    }
+}
