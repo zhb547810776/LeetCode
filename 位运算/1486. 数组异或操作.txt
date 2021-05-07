@@ -1,0 +1,41 @@
+简单题
+按照要求反推即可
+不过每次值相对于上次+2  感觉是有一定规律的  但我没找到
+C#代码如下：
+public class Solution {
+    public int XorOperation(int n, int start) {
+        int res = 0;
+        while(n > 0){
+            res ^= start;
+            start += 2;
+            n--;
+        }
+        return res;
+    }
+}
+
+看了题解确实存在数学规律
+官方题解：
+https://leetcode-cn.com/problems/xor-operation-in-an-array/solution/shu-zu-yi-huo-cao-zuo-by-leetcode-solution/
+官方c++代码如下：
+class Solution {
+public:
+    int sumXor(int x) {
+        if (x % 4 == 0) {
+            return x;
+        }
+        if (x % 4 == 1) {
+            return 1;
+        }
+        if (x % 4 == 2) {
+            return x + 1;
+        }
+        return 0;
+    }
+
+    int xorOperation(int n, int start) {
+        int s = start >> 1, e = n & start & 1;
+        int ret = sumXor(s - 1) ^ sumXor(s + n - 1);
+        return ret << 1 | e;
+    }
+};
