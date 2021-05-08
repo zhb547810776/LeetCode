@@ -1,0 +1,3 @@
+这题属于我自己做不出来，但是看题解可以理解
+然后就附上题解吧：
+https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/solution/wan-cheng-suo-you-gong-zuo-de-zui-duan-s-hrhu/
