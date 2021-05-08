@@ -1,0 +1,46 @@
+我们简单推算一下
+能够发现我们至少需要等到m*k束花开	此时为D1天
+然后最多就是整个花园的花全开了   取最大值D2天
+因此我们需要在D1到D2天内找到最少能够符合要求的那一天
+因此我们可以使用二分查找
+且我们一直找花  符合要求的就连续的花flower+1  flower数量到达k时便count+1
+碰到不符合要求的花就重置   这符合贪心的思想
+C#代码如下：
+public class Solution {
+    public int MinDays(int[] bloomDay, int m, int k) {
+        int flowers = bloomDay.Length;
+
+        if(flowers < m*k){
+            return -1;
+        }
+        int left = 1,right = 1;
+        foreach(int num in bloomDay){
+            right = Math.Max(num,right);
+        }
+        while(left < right){
+            int mid = (right+left) / 2;
+
+            int count = 0;
+            int flower = 0;
+            //贪心计算有多少束花
+            for(int j=0;j<flowers;j++){
+                if(bloomDay[j] <= mid){
+                    flower++;
+                    if(flower == k){
+                        count++;
+                        flower = 0;
+                    }
+                }else{
+                    flower = 0;
+                }
+            }
+            
+            if(count >= m){
+                right = mid;
+            }else{
+                left = mid+1;
+            }
+        }
+        return left;
+    }
+}
