@@ -1,0 +1,50 @@
+基本思路就是找到所有叶子节点  然后对比
+我们可以使用类似前序遍历的方式来遍历
+同时但凡时叶子节点   必定不存在子节点
+因此我们可以使用root.left == null && root.right == null 来寻找叶子节点
+然后可以使用一个list来进行存储和对比
+C#代码如下：
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+public class Solution {
+    public bool LeafSimilar(TreeNode root1, TreeNode root2) {
+        IList<int> list1 = new List<int>();
+        IList<int> list2 = new List<int>();
+
+        DFS(list1,root1);
+        DFS(list2,root2);
+        if(list1.Count != list2.Count){
+            return false;
+        }
+        for(int i=0;i<list1.Count;i++){
+            if(list1[i] != list2[i]){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void DFS(IList<int> list ,TreeNode root){
+        if(root.left == null && root.right == null){
+            list.Add(root.val);
+        }
+        if(root.left != null){
+            DFS(list,root.left);
+        }
+        if(root.right != null){
+            DFS(list,root.right);
+        }
+    }
+}
