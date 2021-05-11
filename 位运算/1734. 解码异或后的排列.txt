@@ -1,0 +1,31 @@
+两个关键信息   是打乱的前n个正整数   且n是奇数
+那么我们可知sum ^= n
+而我们知道encoded[i]  为  code[i] ^= code[i+1]
+即encoded[1] =  code[1] ^= code[2]
+  encoded[3] =  code[3] ^= code[4]
+  encoded[5] =  code[5] ^= code[6]
+可知n为奇数   则encoded为偶数长度
+则encoded最后一位的下标一定是奇数
+即所有下标为奇数的encoded相异或
+则相当于前n个数少了第一位的数
+则可以算出第一个数first	然后根据1720的方法计算
+public class Solution {
+    public int[] Decode(int[] encoded) {
+        int []res = new int [encoded.Length+1];
+        int sum = 1;
+
+        for(int i=2;i <= encoded.Length+1;i++){
+            sum ^= i;
+        }
+        res[0] = sum;
+        for(int i=1;i<encoded.Length;i=i+2){
+            res[0] ^= encoded[i];
+        }
+
+        for(int i=1;i<res.Length;i++){
+            res[i] = res[i-1] ^ encoded[i-1];
+        }
+
+        return res;
+    }
+}
