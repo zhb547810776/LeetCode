@@ -1,0 +1,29 @@
+我最初想到的是使用二维dp去存储从i到j的异或的和
+这样就可以直接将查询数组中的值对应到dp中  直接加入res数组
+但却没通过第四十个测试用例
+当数据过大的时候内存不足
+我意识到二维数组太大   必定是一维数组了
+然后发现在异或中  由于自减性	我求形如[2,5]这样的数时  完全可以使用[0,5] ^ [0,1]
+那么就可以将原本的从i到j优化为从0到i
+这就相当与是前缀和的思想
+C#代码如下：
+public class Solution {
+    public int[] XorQueries(int[] arr, int[][] queries) {
+        int len = arr.Length;
+		//可以将数组长度设置为len+1  0号位置就是0
+        int []dp = new int[len];
+
+        dp[0] = arr[0];
+        for(int i=1;i<len;i++){
+            dp[i] = dp[i-1] ^ arr[i];
+        }
+
+        int []res = new int[queries.Length];
+        for(int i=0;i<queries.Length;i++){
+			//我这样就相当于[2,5] = [0,5] ^ [0,2] ^ 2
+            res[i] = dp[queries[i][0]] ^ dp[queries[i][1]] ^ arr[queries[i][0]];
+        }
+
+        return res;
+    }
+}
