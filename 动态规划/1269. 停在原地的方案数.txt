@@ -1,0 +1,55 @@
+可以使用动态规划的方式来完成
+定义dp[i,j] 为steps操作后位于j处的方案
+所以可以定义dp[0,0] = 0
+然后我们可以知道移动到dp[i,j]的方案有
+dp[i-1,j-1] dp[i-1,j]以及dp[i-1,j+1]三种
+然后由于不能数组范围
+注意一下边界问题
+C#代码如下：
+public class Solution {
+    public int NumWays(int steps, int arrLen) {
+        const int MODULO = 1000000007;
+        int maxColumn = Math.Min(arrLen - 1, steps);
+        int[,] dp = new int[steps + 1, maxColumn + 1];
+        dp[0, 0] = 1;
+        for (int i = 1; i <= steps; i++) {
+            for (int j = 0; j <= maxColumn; j++) {
+                dp[i, j] = dp[i - 1, j];
+                if (j - 1 >= 0) {
+                    dp[i, j] = (dp[i, j] + dp[i - 1, j - 1]) % MODULO;
+                }
+                if (j + 1 <= maxColumn) {
+                    dp[i, j] = (dp[i, j] + dp[i - 1, j + 1]) % MODULO;
+                }
+            }
+        }
+        return dp[steps, 0];
+    }
+}
+然后可以将棋优化为一维dp 官方题解：
+https://leetcode-cn.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/solution/ting-zai-yuan-di-de-fang-an-shu-by-leetcode-soluti/
+官方C++代码如下：
+class Solution {
+public:
+    const int MODULO = 1000000007;
+
+    int numWays(int steps, int arrLen) {
+        int maxColumn = min(arrLen - 1, steps);
+        vector<int> dp(maxColumn + 1);
+        dp[0] = 1;
+        for (int i = 1; i <= steps; i++) {
+            vector<int> dpNext(maxColumn + 1);
+            for (int j = 0; j <= maxColumn; j++) {
+                dpNext[j] = dp[j];
+                if (j - 1 >= 0) {
+                    dpNext[j] = (dpNext[j] + dp[j - 1]) % MODULO;
+                }
+                if (j + 1 <= maxColumn) {
+                    dpNext[j] = (dpNext[j] + dp[j + 1]) % MODULO;
+                }
+            }
+            dp = dpNext;
+        }
+        return dp[0];
+    }
+};
