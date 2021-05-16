@@ -1,0 +1,43 @@
+本题最易想到的方法就是双重循环
+暴力遍历所有答案  记录最大的
+然后我想不出O(n)时间的方式解决问题
+我只能够在暴力的基础上进行一定的优化
+我们可以思考两个数异或后最大的话
+一定是使得nums数组中存在的最高位一定为1
+就比如[31,15,7,3,1]这样的数组
+即11111 1111 111 11 1
+我们若要两个数异或取最大为
+一定会选到31	因为它的最大位数大于其他的数	但我们也要知道16~31的值的最大位数其实是一样的
+我们可以根据这样思想去找出数组中最大位数的所有数
+然后对这些数进行暴力枚举	即可进行一定程度的优化
+C#代码如下：
+public class Solution {
+    public int FindMaximumXOR(int[] nums) {
+        int len = nums.Length;
+        int max = 0;
+        for(int i=0;i<len;i++){
+            max = Math.Max(max,nums[i]);
+        }
+        int bit = 1;
+        while(max>0){
+            max /=2;
+            if(max > 0){
+                bit = bit*2;
+            }
+        }
+        IList<int> list = new List<int>();
+        for(int i=0;i<len;i++){
+            if(nums[i] / bit > 0){
+                list.Add(nums[i]);
+            }
+        }
+        int res = 0;
+        foreach(int item in list){
+            for(int i=0;i<len;i++){
+                res = Math.Max(res,nums[i] ^ item);
+            }
+        }
+
+        return res;
+    }
+}
