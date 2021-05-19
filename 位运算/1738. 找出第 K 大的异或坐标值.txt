@@ -1,0 +1,24 @@
+没有图
+推荐通过官方题解看图更好理解：
+https://leetcode-cn.com/problems/find-kth-largest-xor-coordinate-value/solution/zhao-chu-di-k-da-de-yi-huo-zuo-biao-zhi-mgick/
+反正就是通过前缀和的思想
+可以在dp[i,j]直接找到当前(a,b)时所有异或的值
+然后存储在数组中
+然后排序	返回第k大的值
+public class Solution {
+    public int KthLargestValue(int[][] matrix, int k) {
+        int [,]dp = new int[matrix.Length+1,matrix[0].Length+1];
+        int []arr = new int[matrix.Length*matrix[0].Length];
+
+        int count = 0;
+        for(int i=1;i<=matrix.Length;i++){
+            for(int j=1;j<=matrix[0].Length;j++){
+                dp[i,j] = dp[i-1,j] ^ dp[i,j-1] ^ dp[i-1,j-1] ^ matrix[i-1][j-1];
+                arr[count++] = dp[i,j];
+            }
+        }
+        
+        Array.Sort(arr);
+        return arr[arr.Length - k];
+    }
+}
