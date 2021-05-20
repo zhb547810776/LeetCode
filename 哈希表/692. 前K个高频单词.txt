@@ -1,0 +1,70 @@
+由于保存完每个单词的出现次数时	我们就可以比较轻松的比较次数
+以及次数相同时的字母顺序
+所以使用哈希表来保存数据
+然后暴力或者排序即可
+C#代码如下：
+public class Solution {
+    public IList<string> TopKFrequent(string[] words, int k) {
+        Dictionary<string,int> dic = new Dictionary<string,int>();
+        IList<string> res = new List<string>();
+
+        for(int i=0;i<words.Length;i++){
+            if(dic.ContainsKey(words[i])){
+                dic[words[i]]++;
+            }else{
+                dic.Add(words[i],1);
+            }
+        }
+
+        for(int i=0;i<k;i++){
+            string key = "";
+            int MaxValue = 0;
+
+            foreach(var item in dic){
+                if(item.Value > MaxValue){
+                    key = item.Key;
+                    MaxValue = item.Value;
+                }else if(item.Value == MaxValue){
+                    if(string.Compare(key,item.Key) > 0){
+                        key = item.Key;
+                    }
+                }
+            }
+            res.Add(key);
+            dic.Remove(key);
+        }
+
+        return res;
+    }
+}
+
+然后可以使用优先队列的方式存储数据
+在本题中，我们可以创建一个小根优先队列（顾名思义，就是优先队列顶端元素是最小元素的优先队列）
+我们将每一个字符串插入到优先队列中，如果优先队列的大小超过了k，那么我们就将优先队列顶端元素弹出
+这样最终优先队列中剩下的k个元素就是前k个出现次数最多的单词。
+官方C++代码如下：
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        unordered_map<string, int> cnt;
+        for (auto& word : words) {
+            cnt[word]++;
+        }
+        auto cmp = [](const pair<string, int>& a, const pair<string, int>& b) {
+            return a.second == b.second ? a.first < b.first : a.second > b.second;
+        };
+        priority_queue<pair<string, int>, vector<pair<string, int>>, decltype(cmp)> que(cmp);
+        for (auto& it : cnt) {
+            que.emplace(it);
+            if (que.size() > k) {
+                que.pop();
+            }
+        }
+        vector<string> ret(k);
+        for (int i = k - 1; i >= 0; i--) {
+            ret[i] = que.top().first;
+            que.pop();
+        }
+        return ret;
+    }
+};
