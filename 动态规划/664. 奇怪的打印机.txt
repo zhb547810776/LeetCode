@@ -1,0 +1,40 @@
+呜呜呜  CV了官方题解	每日抑题	可恶啊
+动态规划的思路
+定义dp[i,j] 为i到j位置的最少操作数
+那么可以知道dp[i,i]都为一
+然后思考状态转换方式
+我们能够明白str[i] == str[j]的时候  那么可以直接将str[i]多一份直接赋值到j的位置
+所以可以有dp[i,j] = dp[i,j-1]
+而当str[i] != str[j]的时候
+此时我们需要在中间找到一个位置k
+将其分割成两部分即[i~k] [k+1~j]
+然后找到dp[i,k]+dp[k+1,j]的最小值
+然后为了确保动态规划无后效性的原则
+我们需要从后往前遍历k的位置
+同时需要从大到小的枚举i
+从小到大的枚举j
+官方题解：
+https://leetcode-cn.com/problems/strange-printer/solution/qi-guai-de-da-yin-ji-by-leetcode-solutio-ogbu/
+官方C++代码如下：
+class Solution {
+public:
+    int strangePrinter(string s) {
+        int n = s.length();
+        vector<vector<int>> f(n, vector<int>(n));
+        for (int i = n - 1; i >= 0; i--) {
+            f[i][i] = 1;
+            for (int j = i + 1; j < n; j++) {
+                if (s[i] == s[j]) {
+                    f[i][j] = f[i][j - 1];
+                } else {
+                    int minn = INT_MAX;
+                    for (int k = i; k < j; k++) {
+                        minn = min(minn, f[i][k] + f[k + 1][j]);
+                    }
+                    f[i][j] = minn;
+                }
+            }
+        }
+        return f[0][n - 1];
+    }
+};
