@@ -1,0 +1,66 @@
+方法一比较容易想到
+即通过栈来存储已经遍历完的字符串
+然后通过遍历到的是"("还是")"来判断是否进行反转
+基本就是暴力求解
+C#代码如下：
+public class Solution {
+    public string ReverseParentheses(string s) {
+        Stack<string> stack = new Stack<string>();
+        StringBuilder sb = new StringBuilder();
+        foreach (char ch in s) {
+            if (ch == '(') {
+                stack.Push(sb.ToString());
+                sb.Length = 0;
+            } else if (ch == ')') {
+                char[] arr = sb.ToString().ToCharArray();
+                sb.Length = 0;
+                for (int i = arr.Length - 1; i >= 0; i--) {
+                    sb.Append(arr[i]);
+                }
+                sb.Insert(0, stack.Pop());
+            } else {
+                sb.Append(ch);
+            }
+        }
+        return sb.ToString();
+    }
+}
+
+然后第二中方法
+推荐看官方的题解下面的图解：
+https://leetcode-cn.com/problems/reverse-substrings-between-each-pair-of-parentheses/solution/fan-zhuan-mei-dui-gua-hao-jian-de-zi-chu-gwpv/
+即我们碰到括号  然后改变我们的index和step
+如1(23)4
+当我们碰到第一个左括号时	我们直接跳到右括号的位置	然后向左遍历
+即我们修改的StringBuilder是这样的修改过程： 1	13	132	1324
+然后遍历完成后	这就是答案了
+官方C#代码如下：
+public class Solution {
+    public string ReverseParentheses(string s) {
+        int n = s.Length;
+        int[] pair = new int[n];
+        Stack<int> stack = new Stack<int>();
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '(') {
+                stack.Push(i);
+            } else if (s[i] == ')') {
+                int j = stack.Pop();
+                pair[i] = j;
+                pair[j] = i;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int index = 0, step = 1;
+        while (index < n) {
+            if (s[index] == '(' || s[index] == ')') {
+                index = pair[index];
+                step = -step;
+            } else {
+                sb.Append(s[index]);
+            }
+            index += step;
+        }
+        return sb.ToString();
+    }
+}

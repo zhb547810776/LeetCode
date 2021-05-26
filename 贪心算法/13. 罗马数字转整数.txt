@@ -1,0 +1,71 @@
+基本就是使用贪心的思想
+碰到对应的值时
+res+=对应的值
+然后继续
+但需要注意的点在于900 400 90 50 9 4
+这样两个表示数字的值
+因此可以先判断两个字符的值	若不符合	它就是一个字符的值
+C#代码如下：
+public class Solution {
+    public int RomanToInt(string s) {
+        string [] str = {"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
+        int [] value = {1000,900,500,400,100,90,50,40,10,9,5,4,1};
+
+        int p = 0;
+        int res = 0;
+        while(p<s.Length){
+            string temp = "";
+            bool flag = false;
+            if(p < s.Length-1){
+                temp = s.Substring(p,2);
+                for(int i=0;i<str.Length;i++){
+                    if(temp == str[i]){
+                        res += value[i];
+                        p = p+2;
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if(flag){
+                continue;
+            }
+            temp = s.Substring(p,1);
+            for(int i=0;i<str.Length;i++){
+                if(temp == str[i]){
+                    res += value[i];
+                    p++;
+                    break;
+                }
+            }
+        }
+
+        return res;
+    }
+}
+
+然后我们可以优化一下思路
+我们可以发现两个字符的数字代表的就是右边的数字减去左边的数字即 IX 表示10-1
+因此我们可以单个值进行判断  若它右边的值比它大  那么就减去它
+然后这时候可以使用哈希表来存储数据
+C#代码如下：
+public class Solution {
+    public int RomanToInt(string s) {
+        Dictionary<char,int> dic = new Dictionary<char, int> {
+        {'I', 1},{'V', 5},{'X', 10},{'L', 50},{'C', 100},{'D', 500},{'M', 1000} };
+
+        int len = s.Length;
+        int res = 0;
+
+        for(int i=0;i<len;i++){
+            int temp = dic[s[i]];
+            if(i<len-1 && temp < dic[s[i+1]]){
+                res -= temp;
+            }else{
+                res += temp;
+            }
+        }
+
+        return res;
+    }
+}
