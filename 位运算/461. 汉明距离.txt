@@ -1,0 +1,36 @@
+这道题的定义就是异或的定义
+我们可以将数字异或之后
+去找1的数量
+这就是答案了
+C#代码如下：
+public class Solution {
+    public int HammingDistance(int x, int y) {
+        int num = x ^ y;
+        int count = 0;
+        while(num > 0){
+            if((num & 1) == 1){
+                count++;
+            }
+            num = num >> 1;
+        }
+
+        return count;
+    }
+}
+
+然后看到另一种方式求1的数量
+意义大概是 num & num-1 将会删去num最右边的1
+当num=0时  就说明1已经删完  此时删去的数量就是1一共的数量
+C#代码如下：
+public class Solution {
+    public int HammingDistance(int x, int y) {
+        int num = x ^ y;
+        int count = 0;
+        while(num != 0){
+            num &= num-1;
+            count++;
+        }
+
+        return count;
+    }
+}
