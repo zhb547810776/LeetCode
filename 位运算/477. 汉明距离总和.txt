@@ -1,0 +1,23 @@
+原本想着从461延申过来
+暴力求解的	但是会超时
+然后应当逐位统计
+就是对于数组中的所有数	他们某一个位置i上的值为1的有k个  那么为0的就有n-k个
+那么我们就可以知道只讨论i这个位置的时候   汉明距离的数目为k*(n-k)个
+且由于i不同是互不影响的
+所以我们可以直接逐位统计
+已知最大值位10^9 < 2^30
+所以我们可以枚举从0到29
+C#代码如下：
+public class Solution {
+    public int TotalHammingDistance(int[] nums) {
+        int ans = 0, n = nums.Length;
+        for (int i = 0; i < 30; ++i) {
+            int c = 0;
+            foreach (int val in nums) {
+                c += (val >> i) & 1;
+            }
+            ans += c * (n - c);
+        }
+        return ans;
+    }
+}
