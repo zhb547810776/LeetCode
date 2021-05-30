@@ -1,0 +1,36 @@
+这题最初想到的就是使用前缀和去求解
+但是C#仍然会超时
+因此需要空间存储来优化
+可以使用哈希表来存储
+我们使用前缀和无非是这样一个过程
+先计算[0,j]的前缀和
+然后通过[0,i]的前缀和
+去计算出[i,j]的值	然后再判断它是否等于k
+那么我们换个思路
+把之前的前缀和存储起来
+然后判断哈希表中是否存在[0,j]的前缀和pre-k的值
+存在就可以count += dic[pre-k] 来统计答案
+C#代码如下：
+public class Solution {
+    public int SubarraySum(int[] nums, int k) {
+        int len = nums.Length;
+        int pre = 0;
+        Dictionary<int,int> dic = new Dictionary<int,int>();
+        dic.Add(0,1);
+        int count = 0;
+
+        for(int i=0;i<len;i++){
+            pre = pre + nums[i];
+            if(dic.ContainsKey(pre-k)){
+                count += dic[pre-k];
+            }
+
+            if(dic.ContainsKey(pre)){
+                dic[pre]++;
+            }else{
+                dic.Add(pre,1);
+            }
+        }
+        return count;
+    }
+}
