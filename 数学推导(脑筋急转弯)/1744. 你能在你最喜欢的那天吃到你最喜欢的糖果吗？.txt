@@ -1,0 +1,37 @@
+思路很简单  就是判断到当天时
+最少吃多少糖	最多吃多少糖
+当需要吃的糖在这个区间内	就是true
+推荐反向求解
+即若需要吃的糖少于最少吃的糖	或需要吃的糖大于最多吃的糖时 返回false
+else返回true
+但由于数据量过大	我错了好几次
+直接CV了	思路就这样
+对了  可以使用前缀和的思想来存储需要吃的糖的数量
+官方C#代码如下：
+public class Solution {
+    public bool[] CanEat(int[] candiesCount, int[][] queries) {
+        int n = candiesCount.Length;
+        
+        // 前缀和
+        long[] sum = new long[n];
+        sum[0] = candiesCount[0];
+        for (int i = 1; i < n; ++i) {
+            sum[i] = sum[i - 1] + candiesCount[i];
+        }
+        
+        int q = queries.Length;
+        bool[] ans = new bool[q];
+        for (int i = 0; i < q; ++i) {
+            int[] query = queries[i];
+            int favoriteType = query[0], favoriteDay = query[1], dailyCap = query[2];
+            
+            long x1 = favoriteDay + 1;
+            long y1 = (long) (favoriteDay + 1) * dailyCap;
+            long x2 = favoriteType == 0 ? 1 : sum[favoriteType - 1] + 1;
+            long y2 = sum[favoriteType];
+            
+            ans[i] = !(x1 > y2 || y1 < x2);
+        }
+        return ans;
+    }
+}
