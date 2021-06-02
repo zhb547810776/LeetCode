@@ -1,0 +1,31 @@
+最开始想到就是使用前缀和与暴力来求
+O(n^2)  但是会超时
+所以就想到了需要使用哈希表进行优化
+以前有做过类似的题的
+所以就是优化暴力的方法
+我们其实在遍历前缀和的过程中时  就已经可以知道如果减去多少 满足题意
+而减去的值可以存在的可能就是之前遍历过的前缀和
+我们把这些存储在哈希表中
+如果存在这样的值  且他们之间的下标差大于1	那么就符合题意  能够返回true了
+由于需要记录下标  因此很容易就想到了将哈希表的value来记录下标
+且由于之前的前缀和都存储在哈希表中  因此可以只用一个常量remind来记录i时的前缀和
+C#代码如下：
+public class Solution {
+    public bool CheckSubarraySum(int[] nums, int k) {
+        int remainder = 0;
+        Dictionary<int,int> dic = new Dictionary<int,int>();
+        //-1的作用是使得前两个数的和满足条件时 即i=1时满足题意时
+        dic.Add(0,-1);
+        for(int i=0;i<nums.Length;i++){
+            remainder = (remainder + nums[i])%k;
+            if(dic.ContainsKey(remainder) && i-dic[remainder] > 1){
+                return true;
+            }
+            if(!dic.ContainsKey(remainder)){
+                dic.Add(remainder,i);
+            }
+        }
+
+        return false;
+    }
+}
