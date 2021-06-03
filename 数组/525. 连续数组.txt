@@ -1,0 +1,32 @@
+这道题数组中只有0与1
+那么可以人为将0转换成-1
+那么题目就转换成 当前缀和为0时的最大长度
+然后可以使用哈希表来记录
+题目类似于560 和 523
+应该说是完全一致
+只是最后多一部取最大值操作
+C#代码如下：
+public class Solution {
+    public int FindMaxLength(int[] nums) {
+        int maxLength = 0;
+        Dictionary<int, int> dictionary = new Dictionary<int, int>();
+        int counter = 0;
+        dictionary.Add(counter, -1);
+        int n = nums.Length;
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            if (num == 1) {
+                counter++;
+            } else {
+                counter--;
+            }
+            if (dictionary.ContainsKey(counter)) {
+                int prevIndex = dictionary[counter];
+                maxLength = Math.Max(maxLength, i - prevIndex);
+            } else {
+                dictionary.Add(counter, i);
+            }
+        }
+        return maxLength;
+    }
+}
