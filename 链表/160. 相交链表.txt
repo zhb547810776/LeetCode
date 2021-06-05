@@ -1,0 +1,53 @@
+方法一：
+使用集合Set记录一个链表的值
+然后遍历第二个链表的值
+找到相同的就return
+否则就return false
+C#代码如下：
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public ListNode GetIntersectionNode(ListNode headA, ListNode headB) {
+        ISet<ListNode> visited = new HashSet<ListNode>();
+        while(headA != null){
+            visited.Add(headA);
+            headA = headA.next;
+        }
+
+        while(headB != null){
+            if(visited.Contains(headB)){
+                return headB;
+            }
+            headB = headB.next;
+        }
+
+        return null;
+    }
+}
+
+方法二：
+看官方题解的
+使用双指针
+每步操作需要同时更新指针pA和pB；
+两个指针遍历完后指向另一个指针的头节点
+如果指向同一个节点或同时null	则返回
+C#代码如下：
+public class Solution {
+    public ListNode GetIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        ListNode pA = headA, pB = headB;
+        while (pA != pB) {
+            pA = pA == null ? headB : pA.next;
+            pB = pB == null ? headA : pB.next;
+        }
+        return pA;
+    }
+}

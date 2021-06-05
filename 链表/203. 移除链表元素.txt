@@ -1,0 +1,67 @@
+很简单的题目
+我就使用迭代的方式
+循环遍历值  相同时则移除
+C#代码如下：
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     public ListNode(int val=0, ListNode next=null) {
+ *         this.val = val;
+ *         this.next = next;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode RemoveElements(ListNode head, int val) {
+        while(head != null && head.val == val){
+            head = head.next;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        while(cur != null){
+            if(cur.val == val){
+                pre.next = cur.next;
+                cur = cur.next;
+            }else{
+                pre = cur;
+                cur = cur.next;
+            }
+        }
+
+        return head;
+    }
+}
+
+然后看了官方题解，可以使用增加一个头节点的方式  从而不用考虑head.val == val的情况
+同时可以只使用一个变量存储即可
+C#代码如下：
+public class Solution {
+    public ListNode RemoveElements(ListNode head, int val) {
+        ListNode pre = new ListNode(0);
+        pre.next = head;
+        ListNode temp = pre;
+        while(temp.next != null){
+            if(temp.next.val == val){
+                temp.next = temp.next.next;
+            }else{
+                temp = temp.next;
+            }
+        }
+
+        return pre.next;
+    }
+}
+
+同时也可以使用递归的方式来完成
+C#代码如下：
+public class Solution {
+    public ListNode RemoveElements(ListNode head, int val) {
+        if (head == null) {
+            return head;
+        }
+        head.next = RemoveElements(head.next, val);
+        return head.val == val ? head.next : head;
+    }
+}
