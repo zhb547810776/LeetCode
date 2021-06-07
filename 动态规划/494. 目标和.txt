@@ -1,0 +1,48 @@
+方法一 直接暴力回溯
+可以通过
+C#代码如下：
+public class Solution {
+    int count = 0;
+
+    public int FindTargetSumWays(int[] nums, int target) {
+        Backtrack(nums, target, 0, 0);
+        return count;
+    }
+
+    public void Backtrack(int[] nums, int target, int index, int sum) {
+        if (index == nums.Length) {
+            if (sum == target) {
+                count++;
+            }
+        } else {
+            Backtrack(nums, target, index + 1, sum + nums[index]);
+            Backtrack(nums, target, index + 1, sum - nums[index]);
+        }
+    }
+}
+
+方法二  动态规划 + 空间优化
+还是推荐官方题解吧 有完整的推导过程
+https://leetcode-cn.com/problems/target-sum/solution/mu-biao-he-by-leetcode-solution-o0cp/
+C#代码如下：
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        int diff = sum - target;
+        if (diff < 0 || diff % 2 != 0) {
+            return 0;
+        }
+        int neg = diff / 2;
+        int[] dp = new int[neg + 1];
+        dp[0] = 1;
+        for (int num : nums) {
+            for (int j = neg; j >= num; j--) {
+                dp[j] += dp[j - num];
+            }
+        }
+        return dp[neg];
+    }
+}
