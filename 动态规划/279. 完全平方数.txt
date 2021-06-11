@@ -1,0 +1,21 @@
+这题不能够贪心去求
+比如12 答案应该是 4,4,4
+如果贪心会求得9,1,1,1
+而且这是求最少的  因此可以使用动态规划来实现
+定义f[i] 为和为i时 完全平方数的最少数量
+那么可知f[n] 就是最后的答案
+推导方程就不写了  直接看代码就好
+C#代码如下：
+public class Solution {
+    public int NumSquares(int n) {
+        int[] f = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int minn = int.MaxValue;
+            for (int j = 1; j * j <= i; j++) {
+                minn = Math.Min(minn, f[i - j * j]);
+            }
+            f[i] = minn + 1;
+        }
+        return f[n];
+    }
+}

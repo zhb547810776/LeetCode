@@ -1,0 +1,21 @@
+一个完全背包问题
+定义dp[i]表示钱为i时共有多少种情况
+不考虑顺序
+所以优先遍历硬币
+内部每次从1遍历到target
+C#代码如下：
+public class Solution {
+    public int Change(int amount, int[] coins) {
+        int []dp = new int[amount+1];
+        dp[0] = 1;
+        foreach(int coin in coins){
+            for(int i=1;i<=amount;i++){
+                if(coin <= i){
+                    dp[i] += dp[i-coin];
+                }
+            }
+        }
+
+        return dp[amount];
+    }
+}
